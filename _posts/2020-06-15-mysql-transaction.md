@@ -27,7 +27,7 @@ tags:
 
 ## 事务的隔离级别
 
-* 读未提交**READ_UNCOMMITED**
+* 读未提交[READ_UNCOMMITED]
 
 读出无效数据，一个事务读取了另一个事务尚未提交的数据，存在脏读、不可重复读、幻读的问题
 
@@ -41,7 +41,7 @@ tags:
 
 如上，事务B修改数据但是没有Commit，并且在事务A读取了数据后RollBack，此时事务A读取到的数据为脏数据。
 
-* 读已提交**READ_COMMITED**
+* 读已提交[READ_COMMITED]
 
 同一事务，两个相同的查询返回不同的结果，存在不可重复度、幻读问题
 
@@ -55,7 +55,7 @@ tags:
 
 如上，事务B修改数据但是没有Commit，并且在事务A读取了数据后Commit，此时事务A再次进行同样读取，前后结果不一致。
 
-* 可重复读**REPEATABLE_READ**
+* 可重复读[REPEATABLE_READ]
 
 解决不可重复读的问题，但是存在幻读的问题
 
@@ -70,9 +70,20 @@ tags:
 如上，由于隔离级别为可重复读，则事务A无论做多少次select操作，获取的结果都是0，
 而事实上事务B已经插入了id=1的数据，由此事务A会产生幻读：明明select的结果为0，数据库里面却有数据。
 
-* 序列化**SERIALIZABLE**
+* 序列化[SERIALIZABLE]
 
 解决脏读、不可重复读、幻读问题，可以保证事务安全，但是完全串行执行，性能最低。
+
+## 隔离级别修改
+```sql
+# 查看全局/会话事务隔离级别
+select @@global.tx_isolation, @@tx_isolation;
+
+# 设置全局/会话事务隔离级别(global/session)
+set session transaction isolation level read committed;
+set @@session.tx_isolation = 'REPEATABLE-READ';
+```
+
 
 
 
